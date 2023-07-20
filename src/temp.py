@@ -1,4 +1,5 @@
 import pygame
+import glm
 from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLUT import *
@@ -9,6 +10,10 @@ camera_x = 0.0
 camera_y = 0.0
 zoom = 1.0
 rotation_angle = 0.0
+
+# TODO: move camera values to vector
+camera_vector = glm.vec4(camera_x, camera_y, zoom, rotation_angle)
+print(camera_vector)
 
 def draw_checkered_pattern(size, num_tiles):
     colors = [(0.0, 0.0, 1.0), (1.0, 1.0, 0.0)]  # Blue and Yellow colors
