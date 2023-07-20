@@ -1,0 +1,26 @@
+Iso Trade (working title).
+
+Diary of developer - 20.07.23
+
+This is a game prototype to learn how to manipulate 3D environment in a way that feels like isometric game.
+Also working with OpenGL graphics API to learn how to properly work and render with 3D scenes.
+
+Main idea is to master isometricity (if this is even a word). Second one is to learn how to build economic simulation systems
+and how to design proper big software systems since games are a big software systems.
+
+To build such a system we need to focus on some basic elements of interaction of representation of said game.
+Firstly are: isometric grid to represent game area. Camera and camera work to represent visualisation of
+said game world. Lastly elements of interaction from a player perspective - moving camera, clicking on objects,
+handling input.
+
+After that we have to populate game world with some entities. In this stage comes a few design choices that we
+have to do. My idea is to have a tightly packed isometric grid on screen (tiles will be relatively small).
+Game objects and entities will occupy many tiles at once in City View and in World View we will have entities
+one-tile big with many world features such as lands and water.
+
+So we have a some vision what to do in a next few days. We have to work on isometric tiles and
+camera - how to render isotiles and how to do camera movement. Next step is to create a system
+to interact with said tiles - clicking on them, changing their state in some way. This will
+required some UI elements - let's make something like buttons or UI plane. Then we have to work
+on City View and World View.
+

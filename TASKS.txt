@@ -1,0 +1,11 @@
+Iso Trade - tasks.
+
+20.07.23
+
+- [ ]: Iso Tile rendering
+- [ ]: Camera works and movement
+- [ ]: UI element - button
+- [ ]: UI element - window/plane
+- [ ]: City View - different IsoTile sizes and camera work.
+- [ ]: World View - different IsoTile sizes and camera work.
+- [ ]: City View / World View switching
