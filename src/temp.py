@@ -99,6 +99,8 @@ def main():
     vertex_shader_object = glCreateShader(GL_VERTEX_SHADER)
     fragment_shader_object = glCreateShader(GL_FRAGMENT_SHADER)
 
+    # Check for errors?
+
     glShaderSource(vertex_shader_object, vertex_shader)
     glShaderSource(fragment_shader_object, fragment_shader)
 
