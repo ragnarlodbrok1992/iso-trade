@@ -3,6 +3,7 @@ Iso Trade - tasks.
 20.07.23
 
 - [ ]: Iso Tile rendering
+- [ ]: Projection class - this can be useful
 - [ ]: Camera works and movement
 - [ ]: UI element - button
 - [ ]: UI element - window/plane

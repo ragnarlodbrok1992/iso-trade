@@ -52,6 +52,17 @@ def main():
     glDeleteShader(vertex_shader_id)
     glDeleteShader(fragment_shader_id)
 
+    projection = np.array([
+        [2.0 / display[0], 0, 0, 0],
+        [0, 2.0 / display[1], 0, 0],
+        [0, 0, -1, 0],
+        [-1, -1, 0, 1],
+    ], dtype=np.float32)
+
+    projection_location = glGetUniformLocation(shader_program, "projection")
+    glUseProgram(shader_program)
+    glUniformMatrix4fv(projection_location, 1, GL_FALSE, projection)
+
     vao = glGenVertexArrays(1)
     vbo = glGenBuffers(1)
 

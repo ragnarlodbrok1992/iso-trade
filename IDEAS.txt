@@ -5,8 +5,8 @@ Diary of developer - 20.07.23
 This is a game prototype to learn how to manipulate 3D environment in a way that feels like isometric game.
 Also working with OpenGL graphics API to learn how to properly work and render with 3D scenes.
 
-Main idea is to master isometricity (if this is even a word). Second one is to learn how to build economic simulation systems
-and how to design proper big software systems since games are a big software systems.
+Main idea is to master isometricity (if this is even a word). Second one is to learn how to build economic
+simulation systems and how to design proper big software systems since games are a big software systems.
 
 To build such a system we need to focus on some basic elements of interaction of representation of said game.
 Firstly are: isometric grid to represent game area. Camera and camera work to represent visualisation of
@@ -24,3 +24,8 @@ to interact with said tiles - clicking on them, changing their state in some way
 require some UI elements - let's make something like buttons or UI plane. Then we have to work
 on City View and World View.
 
+Diary of developer - 21.07.23
+
+Render ideas - how to animate stuff? When we render static stuff like IsoTiles then moving camera around is good.
+But how to change some render state? Should we change values inside object and push it to GPU? Does this work like that
+every frame? Need more information about it.
