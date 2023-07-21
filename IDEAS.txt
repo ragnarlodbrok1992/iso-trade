@@ -21,6 +21,6 @@ one-tile big with many world features such as lands and water.
 So we have a some vision what to do in a next few days. We have to work on isometric tiles and
 camera - how to render isotiles and how to do camera movement. Next step is to create a system
 to interact with said tiles - clicking on them, changing their state in some way. This will
-required some UI elements - let's make something like buttons or UI plane. Then we have to work
+require some UI elements - let's make something like buttons or UI plane. Then we have to work
 on City View and World View.
 
