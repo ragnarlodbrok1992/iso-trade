@@ -29,3 +29,16 @@ Diary of developer - 21.07.23
 Render ideas - how to animate stuff? When we render static stuff like IsoTiles then moving camera around is good.
 But how to change some render state? Should we change values inside object and push it to GPU? Does this work like that
 every frame? Need more information about it.
+
+Diary of developer - 22.07.23
+
+Most concerning now is camera work - model view and projection matrices need to work perfectly to be able to
+render stuff properly. There are two projections: orthogonal and perspective. Of course there are many
+others, but we will focus on those two.
+
+I can take whatever I did in longship-engine code in a camera work there! But first I need to check what
+is going on there, since it's Jai code. I love Jai, and I plan this prototype game to finally be written in Jai.
+I need to focus more on software design, not on languages. I kinda get a grasp of what is going on underneath.
+
+After that we should create a isotile which will be rendered static and will be kind of our "world table" stuff.
+
