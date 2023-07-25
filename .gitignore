@@ -2,4 +2,7 @@
 venv/
 *.pyc
 *.bak
+.build/
+*.exe
+*.pdb
 

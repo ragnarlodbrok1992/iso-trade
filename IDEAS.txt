@@ -42,3 +42,14 @@ I need to focus more on software design, not on languages. I kinda get a grasp o
 
 After that we should create a isotile which will be rendered static and will be kind of our "world table" stuff.
 
+Diary of developer - 25.07.23
+
+Moved whole code to Jai, since having bloated libraries in toy language such as Python is really not optimal for me.
+Basically I remove whole level of interpreter/JIT/whatever is going on under in Python to compiled, statically typed
+language that compiles to my native platform which is Windows.
+
+Right now I'm proceeding with everything I've learned so far to faciliated my knowledge and run this project
+from ground-up to some satisfying me level.
+
+I'll try to incorporate some C/C++ and Python code of course to help me, but core engine will be written in Jai.
+
