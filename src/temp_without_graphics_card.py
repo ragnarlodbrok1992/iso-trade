@@ -3,6 +3,11 @@ from OpenGL.GL import *
 import OpenGL.GL.shaders as shaders
 import numpy as np
 
+# Some constants
+
+ASPECT_RATIO = 4/3
+FOV = 90  # In degrees
+
 vertex_shader = """
 #version 330
 
@@ -35,15 +40,30 @@ void main()
 }
 """
 
+# Functions for MVP matrix for perspective projection
+def perspective(fov_degrees=FOV, aspect_ratio=ASPECT_RATIO, near=0.1, far=1000.0):
+    fov_rad = np.radians(fov_degrees)
+    f = 1.0 / np.tan(fov_rad / 2.0)
+    z_range = near - far
+
+    perspective_matrix = np.array([
+        [f / aspect_ratio, 0.0,                         0.0,                          0.0],
+        [0.0,              f,                           0.0,                          0.0],
+        [0.0,              0.0,                     (far + near) / z_range,          (2.0 * far * near) / z_range],
+        [0.0,              0.0,                        -1.0,                          0.0]
+    ])
+
+    return perspective_matrix
+
 def main():
     pygame.init()
     display = (800, 600)
     pygame.display.set_mode(display, pygame.OPENGL | pygame.DOUBLEBUF)
 
     vertices = np.array([
-        [-500.0, -500.0, 0.0,  1.0, 0.0, 0.0], # Red
-        [500.0, -500.0, 0.0,  0.0, 1.0, 0.0], # Green
-        [0.0,  500.0, 0.0,  0.0, 0.0, 1.0], # Blue
+        [-5.0, -5.0, 0.0,  1.0, 0.0, 0.0], # Red
+        [5.0, -5.0, 0.0,  0.0, 1.0, 0.0], # Green
+        [0.0,  5.0, 0.0,  0.0, 0.0, 1.0], # Blue
     ], dtype=np.float32)
 
     vertex_shader_id = glCreateShader(GL_VERTEX_SHADER)
@@ -103,11 +123,19 @@ def main():
     view_location = glGetUniformLocation(shader_program, "view")
     projection_location = glGetUniformLocation(shader_program, "projection")
 
+    # DEBUG prints
+    print("Perspective matrix:", perspective())
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 return
+
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    return
 
         glClearColor(0.2, 0.3, 0.3, 1.0)
         glClear(GL_COLOR_BUFFER_BIT)
