@@ -8,6 +8,16 @@ from src.static_entities.iso_map import IsoMap
 SIZE = [800, 600]
 GAME_TITLE = "IsoTrade"
 
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+
+ISO_TILE_SIZE = 25
+
+
+def draw_isometric_tile(screen, x, y, size):
+    pygame.draw.polygon(screen, WHITE,
+                        [(x, y), (x + size, y + size / 2), (x, y + size), (x - size, y + size / 2)])
+
 
 class IsoTrade:
 
@@ -28,9 +38,17 @@ class IsoTrade:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_q:
                         self.running = False
+                    elif event.key == pygame.K_ESCAPE:
+                        self.running = False
 
             # Rendering
-            self.screen.fill((255, 255, 255))
+            self.screen.fill(BLACK)
+
+            # Draw an iso tile
+            # pygame.draw.rect(self.screen, WHITE, (100, 100, 50, 25))
+            draw_isometric_tile(self.screen, 100, 100, ISO_TILE_SIZE)
+
+            # Last stuff in frame
             pygame.display.flip()
             self.clock.tick(60)
 
