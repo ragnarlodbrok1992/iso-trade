@@ -25,8 +25,11 @@ def draw_isometric_tile_color(screen, x, y, size, color):
     pygame.draw.polygon(screen, color,
                         [(x, y), (x + size, y + size / 2), (x, y + size), (x - size, y + size / 2)])
 
+
 def draw_text(screen, text, color, size, x, y):
-    pass
+    font = pygame.font.Font(None, size)
+    text_surface = font.render(text, True, color)
+    screen.blit(text_surface, (x, y))
 
 
 class IsoTile:
@@ -100,6 +103,7 @@ class IsoTrade:
             self.iso_tile_grid.render_grid(self.screen)
 
             # Draw debug test text on screen
+            draw_text(self.screen, "IsoTrade - debug text", WHITE, 16, 10, 10)
 
             # Last stuff in frame
             pygame.display.flip()
