@@ -13,6 +13,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
 ISO_TILE_SIZE = 25
+ISO_TILE_GRID = []
 
 
 def draw_isometric_tile(screen, x, y, size):
@@ -23,6 +24,44 @@ def draw_isometric_tile(screen, x, y, size):
 def draw_isometric_tile_color(screen, x, y, size, color):
     pygame.draw.polygon(screen, color,
                         [(x, y), (x + size, y + size / 2), (x, y + size), (x - size, y + size / 2)])
+
+def draw_text(screen, text, color, size, x, y):
+    pass
+
+
+class IsoTile:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.color = (random.randint(0, 255),
+                      random.randint(0, 255),
+                      random.randint(0, 255))
+
+
+class IsoTileGrid:
+
+    def __init__(self, num_rows, num_cols):
+        self.iso_tile_grid_container = []
+        self.iso_tile_x = 100
+        self.iso_tile_y = 100
+
+        # Rows and cols
+        self.num_rows = num_rows
+        self.num_cols = num_cols
+        self._prepare_grid(num_rows, num_cols)
+
+    def _prepare_grid(self, num_rows, num_cols):
+        for i in range(num_cols):
+            for j in range(num_rows):
+                self.iso_tile_grid_container.append(IsoTile(i, j))
+
+    def render_grid(self, screen):
+        for tile in self.iso_tile_grid_container:
+            draw_isometric_tile_color(screen,
+                                      self.iso_tile_x + tile.x * ISO_TILE_SIZE,
+                                      self.iso_tile_y + tile.y * ISO_TILE_SIZE + (tile.x % 2) * ISO_TILE_SIZE / 2,
+                                      ISO_TILE_SIZE,
+                                      tile.color)
 
 
 class IsoTrade:
@@ -35,8 +74,11 @@ class IsoTrade:
         self.running = True
 
         # Tweaking variables
-        self.num_rows = 10
-        self.num_cols = 10
+        self.num_rows = 17
+        self.num_cols = 25
+
+        # Preparing grid
+        self.iso_tile_grid = IsoTileGrid(self.num_rows, self.num_cols)
 
     def run(self):
         while self.running:
@@ -54,24 +96,10 @@ class IsoTrade:
             # Rendering
             self.screen.fill(BLACK)
 
-            # Draw an iso tile
-            # pygame.draw.rect(self.screen, WHITE, (100, 100, 50, 25))
-            for i in range(self.num_cols):  # Drawing columns
-                for j in range(self.num_rows):  # Drawing rows
-                    # Prepare random color
-                    random_r = random.randint(0, 255)
-                    random_g = random.randint(0, 255)
-                    random_b = random.randint(0, 255)
-                    RANDOM_COLOR = (random_r, random_g, random_b)
+            # Draw grid
+            self.iso_tile_grid.render_grid(self.screen)
 
-                    # Call draw function
-                    draw_isometric_tile_color(self.screen,
-                                              100 + i * ISO_TILE_SIZE,
-                                              100 + j * ISO_TILE_SIZE + (i % 2) * ISO_TILE_SIZE / 2,
-                                              ISO_TILE_SIZE,
-                                              RANDOM_COLOR)
-
-            # draw_isometric_tile(self.screen, 100, 100, ISO_TILE_SIZE)
+            # Draw debug test text on screen
 
             # Last stuff in frame
             pygame.display.flip()
