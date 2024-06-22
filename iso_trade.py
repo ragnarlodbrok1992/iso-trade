@@ -45,8 +45,13 @@ class IsoTileGrid:
 
     def __init__(self, num_rows, num_cols):
         self.iso_tile_grid_container = []
+        # This two variables are offsets for the grid
         self.iso_tile_x = 100
         self.iso_tile_y = 100
+
+        # Camera offsets for the grid rendering
+        self.camera_x = 0
+        self.camera_y = 0
 
         # Rows and cols
         self.num_rows = num_rows
@@ -61,8 +66,8 @@ class IsoTileGrid:
     def render_grid(self, screen):
         for tile in self.iso_tile_grid_container:
             draw_isometric_tile_color(screen,
-                                      self.iso_tile_x + tile.x * ISO_TILE_SIZE,
-                                      self.iso_tile_y + tile.y * ISO_TILE_SIZE + (tile.x % 2) * ISO_TILE_SIZE / 2,
+                                      self.camera_x + self.iso_tile_x + tile.x * ISO_TILE_SIZE,
+                                      self.camera_y + self.iso_tile_y + tile.y * ISO_TILE_SIZE + (tile.x % 2) * ISO_TILE_SIZE / 2,
                                       ISO_TILE_SIZE,
                                       tile.color)
 
@@ -84,17 +89,50 @@ class IsoTrade:
         self.iso_tile_grid = IsoTileGrid(self.num_rows, self.num_cols)
 
     def run(self):
+        # Main game loop
+        # Control variables
+        is_mouse_dragging = False
+        dragging_offset_per_frame = (0, 0)
+        dragging_previous_mouse_pos = (0, 0)
+
         while self.running:
             # Checking events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+                # Keyboard presses
                 # Check for Q key pressed
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_q:
                         self.running = False
                     elif event.key == pygame.K_ESCAPE:
                         self.running = False
+                # Mouse events
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    # Left mouse button
+                    if event.button == 1:
+                        # Check where the mouse is clicked
+                        button_down_pos = pygame.mouse.get_pos()
+                        dragging_previous_mouse_pos = button_down_pos
+                        is_mouse_dragging = True
+
+                elif event.type == pygame.MOUSEBUTTONUP:
+                    # Left mouse button
+                    if event.button == 1:
+                        button_up_pos = pygame.mouse.get_pos()
+                        is_mouse_dragging = False
+
+            # Mouse dragging
+            if is_mouse_dragging:
+                dragging_offset_per_frame = pygame.mouse.get_pos()
+                # TODO implement or use numpy for vector operations
+                dragging_difference = (dragging_offset_per_frame[0] - dragging_previous_mouse_pos[0],
+                                       dragging_offset_per_frame[1] - dragging_previous_mouse_pos[1])
+                # TODO implement vector operation?
+                self.iso_tile_grid.camera_x += dragging_difference[0]
+                self.iso_tile_grid.camera_y += dragging_difference[1]
+
+                dragging_previous_mouse_pos = pygame.mouse.get_pos()
 
             # Rendering
             self.screen.fill(BLACK)
