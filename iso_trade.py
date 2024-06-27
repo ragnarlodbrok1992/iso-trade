@@ -16,7 +16,8 @@ ISO_TILE_SIZE = 25
 ISO_TILE_GRID = []
 
 
-def draw_bounding_box(screen, top_left_x, top_left_y, bottom_right_x, bottom_right_y):
+def draw_bounding_box(grid, screen, top_left_x, top_left_y, bottom_right_x, bottom_right_y):
+    grid.update_grid_bounding_box()
     pygame.draw.rect(screen, WHITE, (top_left_x, top_left_y, bottom_right_x, bottom_right_y), 1)
 
 
@@ -63,8 +64,15 @@ class IsoTileGrid:
         self._prepare_grid(num_rows, num_cols)
 
         # Grid bounding box
+        self.top_left_x = None
+        self.top_left_y = None
+        self.bottom_right_x = None
+        self.bottom_right_y = None
+        self.update_grid_bounding_box()
+
+    def update_grid_bounding_box(self):
         self.top_left_x = self.iso_tile_x + self.camera_x - ISO_TILE_SIZE
-        self.top_left_y = self.iso_tile_y + self.camera_y - ISO_TILE_SIZE
+        self.top_left_y = self.iso_tile_y + self.camera_y
         self.bottom_right_x = self.top_left_x + self.num_cols * ISO_TILE_SIZE
         self.bottom_right_y = self.top_left_y + self.num_rows * ISO_TILE_SIZE
 
@@ -74,10 +82,7 @@ class IsoTileGrid:
                 self.iso_tile_grid_container.append(IsoTile(i, j))
 
     def _is_grid_clicked(self, screen_x, screen_y) -> bool:
-        self.top_left_x = self.iso_tile_x + self.camera_x - ISO_TILE_SIZE
-        self.top_left_y = self.iso_tile_y + self.camera_y - ISO_TILE_SIZE
-        self.bottom_right_x = self.top_left_x + self.num_cols * ISO_TILE_SIZE
-        self.bottom_right_y = self.top_left_y + self.num_rows * ISO_TILE_SIZE
+        self.update_grid_bounding_box()
 
         # PyGame - draw bounding box with those values
         # render_bounding_box(self.screen, self.top_left_x, self.top_left_y, self.bottom_right_x, self.bottom_right_y)
@@ -161,6 +166,8 @@ class IsoTrade:
                         selected_tile = self.iso_tile_grid.select_tile(button_up_pos[0], button_up_pos[1])
 
             # Mouse dragging
+            # FIXME: Dragging should be only acknowledged when user dragged something - not just clicked
+            # in this case the behaviour will be different
             if is_mouse_dragging:
                 dragging_offset_per_frame = pygame.mouse.get_pos()
                 # TODO implement or use numpy for vector operations
@@ -179,7 +186,8 @@ class IsoTrade:
             self.iso_tile_grid.render_grid(self.screen)
 
             # DEBUG renders
-            draw_bounding_box(self.screen, self.iso_tile_grid.top_left_x, self.iso_tile_grid.top_left_y,
+            draw_bounding_box(self.iso_tile_grid, self.screen,
+                              self.iso_tile_grid.top_left_x, self.iso_tile_grid.top_left_y,
                               self.iso_tile_grid.bottom_right_x, self.iso_tile_grid.bottom_right_y)
 
             # Draw debug test text on screen
