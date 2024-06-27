@@ -16,6 +16,10 @@ ISO_TILE_SIZE = 25
 ISO_TILE_GRID = []
 
 
+def draw_bounding_box(screen, top_left_x, top_left_y, bottom_right_x, bottom_right_y):
+    pygame.draw.rect(screen, WHITE, (top_left_x, top_left_y, bottom_right_x, bottom_right_y), 1)
+
+
 def draw_isometric_tile(screen, x, y, size):
     pygame.draw.polygon(screen, WHITE,
                         [(x, y), (x + size, y + size / 2), (x, y + size), (x - size, y + size / 2)])
@@ -43,7 +47,7 @@ class IsoTile:
 
 class IsoTileGrid:
 
-    def __init__(self, num_rows, num_cols):
+    def __init__(self, screen, num_rows, num_cols):
         self.iso_tile_grid_container = []
         # This two variables are offsets for the grid
         self.iso_tile_x = 100
@@ -58,10 +62,34 @@ class IsoTileGrid:
         self.num_cols = num_cols
         self._prepare_grid(num_rows, num_cols)
 
+        # Grid bounding box
+        self.top_left_x = self.iso_tile_x + self.camera_x - ISO_TILE_SIZE
+        self.top_left_y = self.iso_tile_y + self.camera_y - ISO_TILE_SIZE
+        self.bottom_right_x = self.top_left_x + self.num_cols * ISO_TILE_SIZE
+        self.bottom_right_y = self.top_left_y + self.num_rows * ISO_TILE_SIZE
+
     def _prepare_grid(self, num_rows, num_cols):
         for i in range(num_cols):
             for j in range(num_rows):
                 self.iso_tile_grid_container.append(IsoTile(i, j))
+
+    def _is_grid_clicked(self, screen_x, screen_y) -> bool:
+        self.top_left_x = self.iso_tile_x + self.camera_x - ISO_TILE_SIZE
+        self.top_left_y = self.iso_tile_y + self.camera_y - ISO_TILE_SIZE
+        self.bottom_right_x = self.top_left_x + self.num_cols * ISO_TILE_SIZE
+        self.bottom_right_y = self.top_left_y + self.num_rows * ISO_TILE_SIZE
+
+        # PyGame - draw bounding box with those values
+        # render_bounding_box(self.screen, self.top_left_x, self.top_left_y, self.bottom_right_x, self.bottom_right_y)
+
+        # if self.iso_tile_x + self.camera_x < screen_x < self.iso_tile_x + self.camera_x + self.num_cols * ISO_TILE_SIZE:
+        #     if self.iso_tile_y + self.camera_y < screen_y < self.iso_tile_y + self.camera_y + self.num_rows * ISO_TILE_SIZE:
+        #         return True
+        if self.top_left_x < screen_x < self.bottom_right_x:
+            if self.top_left_y < screen_y < self.bottom_right_y:
+                return True
+
+        return False
 
     def render_grid(self, screen):
         for tile in self.iso_tile_grid_container:
@@ -70,6 +98,13 @@ class IsoTileGrid:
                                       self.camera_y + self.iso_tile_y + tile.y * ISO_TILE_SIZE + (tile.x % 2) * ISO_TILE_SIZE / 2,
                                       ISO_TILE_SIZE,
                                       tile.color)
+
+    def select_tile(self, screen_x, screen_y) -> IsoTile:
+        if self._is_grid_clicked(screen_x, screen_y):
+            print(f"Grid clicked: {screen_x}, {screen_y}")
+        # TODO(ragnar): Implement this method
+        # This requires transformation from "normal" grid to isometric grid
+        return None
 
 
 class IsoTrade:
@@ -86,7 +121,7 @@ class IsoTrade:
         self.num_cols = 25
 
         # Preparing grid
-        self.iso_tile_grid = IsoTileGrid(self.num_rows, self.num_cols)
+        self.iso_tile_grid = IsoTileGrid(self.screen, self.num_rows, self.num_cols)
 
     def run(self):
         # Main game loop
@@ -122,6 +157,9 @@ class IsoTrade:
                         button_up_pos = pygame.mouse.get_pos()
                         is_mouse_dragging = False
 
+                        # Clicking on the grid - on release action
+                        selected_tile = self.iso_tile_grid.select_tile(button_up_pos[0], button_up_pos[1])
+
             # Mouse dragging
             if is_mouse_dragging:
                 dragging_offset_per_frame = pygame.mouse.get_pos()
@@ -139,6 +177,10 @@ class IsoTrade:
 
             # Draw grid
             self.iso_tile_grid.render_grid(self.screen)
+
+            # DEBUG renders
+            draw_bounding_box(self.screen, self.iso_tile_grid.top_left_x, self.iso_tile_grid.top_left_y,
+                              self.iso_tile_grid.bottom_right_x, self.iso_tile_grid.bottom_right_y)
 
             # Draw debug test text on screen
             draw_text(self.screen, "IsoTrade - debug text", WHITE, 16, 10, 10)
