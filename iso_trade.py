@@ -6,7 +6,11 @@ import random
 from src.static_entities.iso_map import IsoMap
 
 # Constants
-SIZE = [800, 600]
+RATIO_X = 16.0
+RATIO_Y = 9.0
+RESOLUTION_FACTOR = 100.0  # 100.0 for 1600x900
+SIZE = [int(RESOLUTION_FACTOR * RATIO_X), int(RESOLUTION_FACTOR * RATIO_Y)]
+print(f"SIZE: {SIZE}")
 GAME_TITLE = "IsoTrade"
 
 WHITE = (255, 255, 255)
