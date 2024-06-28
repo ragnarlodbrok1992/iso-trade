@@ -5,6 +5,9 @@ import random
 # Local imports
 from src.static_entities.iso_map import IsoMap
 
+# DEBUG
+DEBUG = True
+
 # Constants
 RATIO_X = 16.0
 RATIO_Y = 9.0
@@ -16,13 +19,17 @@ GAME_TITLE = "IsoTrade"
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-ISO_TILE_SIZE = 25
-ISO_TILE_GRID = []
+ISO_TILE_SIZE = 25  # Same as width (x coordinate dimension)
+ISO_TILE_HEIGHT = int(ISO_TILE_SIZE / 2)  # Same as height (y coordinate dimension)
+if DEBUG:
+    print(f"ISO_TILE_HEIGHT: {ISO_TILE_HEIGHT}")
 
 
 def draw_bounding_box(grid, screen, top_left_x, top_left_y, bottom_right_x, bottom_right_y):
     grid.update_grid_bounding_box()
-    pygame.draw.rect(screen, WHITE, (top_left_x, top_left_y, bottom_right_x, bottom_right_y), 1)
+    pygame.draw.rect(screen, WHITE, (top_left_x, top_left_y,
+                                     bottom_right_x - top_left_x,
+                                     bottom_right_y - top_left_y), 1)
 
 
 def draw_isometric_tile(screen, x, y, size):
@@ -77,8 +84,8 @@ class IsoTileGrid:
     def update_grid_bounding_box(self):
         self.top_left_x = self.iso_tile_x + self.camera_x - ISO_TILE_SIZE
         self.top_left_y = self.iso_tile_y + self.camera_y
-        self.bottom_right_x = self.top_left_x + self.num_cols * ISO_TILE_SIZE
-        self.bottom_right_y = self.top_left_y + self.num_rows * ISO_TILE_SIZE
+        self.bottom_right_x = self.top_left_x + self.num_cols * ISO_TILE_SIZE + ISO_TILE_SIZE
+        self.bottom_right_y = self.top_left_y + self.num_rows * ISO_TILE_SIZE + (ISO_TILE_SIZE / 2)
 
     def _prepare_grid(self, num_rows, num_cols):
         for i in range(num_cols):
@@ -135,6 +142,7 @@ class IsoTrade:
     def run(self):
         # Main game loop
         # Control variables
+        selected_tile = None
         is_mouse_dragging = False
         has_mouse_dragged = False
         dragging_offset_per_frame = (0, 0)
@@ -194,7 +202,6 @@ class IsoTrade:
 
             # Draw grid
             self.iso_tile_grid.render_grid(self.screen)
-
             # DEBUG renders
             draw_bounding_box(self.iso_tile_grid, self.screen,
                               self.iso_tile_grid.top_left_x, self.iso_tile_grid.top_left_y,
@@ -202,6 +209,10 @@ class IsoTrade:
 
             # Draw debug test text on screen
             draw_text(self.screen, "IsoTrade - debug text", WHITE, 16, 10, 10)
+            if selected_tile is not None:
+                draw_text(self.screen,
+                          f"Selected tile: {selected_tile.x},{selected_tile.y}",
+                          WHITE, 16, 10, 30)
 
             # Last stuff in frame
             pygame.display.flip()
