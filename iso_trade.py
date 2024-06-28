@@ -132,6 +132,7 @@ class IsoTrade:
         # Main game loop
         # Control variables
         is_mouse_dragging = False
+        has_mouse_dragged = False
         dragging_offset_per_frame = (0, 0)
         dragging_previous_mouse_pos = (0, 0)
 
@@ -163,7 +164,10 @@ class IsoTrade:
                         is_mouse_dragging = False
 
                         # Clicking on the grid - on release action
-                        selected_tile = self.iso_tile_grid.select_tile(button_up_pos[0], button_up_pos[1])
+                        if not has_mouse_dragged:
+                            selected_tile = self.iso_tile_grid.select_tile(button_up_pos[0], button_up_pos[1])
+
+                        has_mouse_dragged = False
 
             # Mouse dragging
             # FIXME: Dragging should be only acknowledged when user dragged something - not just clicked
@@ -174,8 +178,10 @@ class IsoTrade:
                 dragging_difference = (dragging_offset_per_frame[0] - dragging_previous_mouse_pos[0],
                                        dragging_offset_per_frame[1] - dragging_previous_mouse_pos[1])
                 # TODO implement vector operation?
-                self.iso_tile_grid.camera_x += dragging_difference[0]
-                self.iso_tile_grid.camera_y += dragging_difference[1]
+                if dragging_difference[0] != 0 or dragging_difference[1] != 0:
+                    has_mouse_dragged = True
+                    self.iso_tile_grid.camera_x += dragging_difference[0]
+                    self.iso_tile_grid.camera_y += dragging_difference[1]
 
                 dragging_previous_mouse_pos = pygame.mouse.get_pos()
 
