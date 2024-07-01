@@ -95,12 +95,6 @@ class IsoTileGrid:
     def _is_grid_clicked(self, screen_x, screen_y) -> bool:
         self.update_grid_bounding_box()
 
-        # PyGame - draw bounding box with those values
-        # render_bounding_box(self.screen, self.top_left_x, self.top_left_y, self.bottom_right_x, self.bottom_right_y)
-
-        # if self.iso_tile_x + self.camera_x < screen_x < self.iso_tile_x + self.camera_x + self.num_cols * ISO_TILE_SIZE:
-        #     if self.iso_tile_y + self.camera_y < screen_y < self.iso_tile_y + self.camera_y + self.num_rows * ISO_TILE_SIZE:
-        #         return True
         if self.top_left_x < screen_x < self.bottom_right_x:
             if self.top_left_y < screen_y < self.bottom_right_y:
                 return True
@@ -115,12 +109,15 @@ class IsoTileGrid:
                                       ISO_TILE_SIZE,
                                       tile.color)
 
+    def _get_clicked_tile(self, screen_x, screen_y) -> IsoTile:
+        return None
+
     def select_tile(self, screen_x, screen_y) -> IsoTile:
         if self._is_grid_clicked(screen_x, screen_y):
             print(f"Grid clicked: {screen_x}, {screen_y}")
         # TODO(ragnar): Implement this method
         # This requires transformation from "normal" grid to isometric grid
-        return None
+        return self._get_clicked_tile(screen_x, screen_y)
 
 
 class IsoTrade:
@@ -203,12 +200,16 @@ class IsoTrade:
             # Draw grid
             self.iso_tile_grid.render_grid(self.screen)
             # DEBUG renders
-            draw_bounding_box(self.iso_tile_grid, self.screen,
-                              self.iso_tile_grid.top_left_x, self.iso_tile_grid.top_left_y,
-                              self.iso_tile_grid.bottom_right_x, self.iso_tile_grid.bottom_right_y)
+            if DEBUG:
+                draw_bounding_box(self.iso_tile_grid, self.screen,
+                                  self.iso_tile_grid.top_left_x, self.iso_tile_grid.top_left_y,
+                                  self.iso_tile_grid.bottom_right_x, self.iso_tile_grid.bottom_right_y)
 
             # Draw debug test text on screen
-            draw_text(self.screen, "IsoTrade - debug text", WHITE, 16, 10, 10)
+            title_text = f"IsoTrade - FPS {int(self.clock.get_fps())}"
+            pygame.display.set_caption(title_text)
+
+            # draw_text(self.screen, debug_text, WHITE, 16, 10, 10)
             if selected_tile is not None:
                 draw_text(self.screen,
                           f"Selected tile: {selected_tile.x},{selected_tile.y}",
