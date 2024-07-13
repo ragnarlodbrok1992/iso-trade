@@ -111,23 +111,17 @@ class IsoTileGrid:
 
     def _get_clicked_tile(self, screen_x, screen_y) -> IsoTile:
         # Find grid coordinates
-        bound_line_one = None
-        bound_line_two = None
-        grid_x = screen_x - self.top_left_x
-        grid_y = screen_y - self.top_left_y
-        print(f"Grid coordinates: {grid_x}, {grid_y}")
-        if grid_x > ISO_TILE_SIZE and grid_y > ISO_TILE_HEIGHT:
-            line_left = (ISO_TILE_SIZE - grid_x) % (2 * ISO_TILE_SIZE)
-            print(f"Line left: {line_left}")
-
+        grid_x = screen_x - self.iso_tile_x - self.camera_x + ISO_TILE_SIZE
+        grid_y = screen_y - self.iso_tile_y - self.camera_y
+        # Algebra liniowa się kłania, ogarnij to po prostu po transformacji i tyle xD
+        print(f"Grid coords clicked: {grid_x}, {grid_y}")
 
     def select_tile(self, screen_x, screen_y) -> IsoTile:
         if self._is_grid_clicked(screen_x, screen_y):
             print(f"Screen coords clicked: {screen_x}, {screen_y}")
-        # TODO(ragnar): Implement this method
-        # This requires transformation from "normal" grid to isometric grid
-        return self._get_clicked_tile(screen_x, screen_y)
-
+            return self._get_clicked_tile(screen_x, screen_y)
+        else:
+            return None
 
 class IsoTrade:
 
